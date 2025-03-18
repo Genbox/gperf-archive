@@ -1,0 +1,64 @@
+%{
+	command line: -p -G -t -k1,3 -o -j1 -N find_builtin bash.gperf
+%}
+struct builtin {
+  char *name;
+  Function *function;
+  int enabled;
+  char *short_doc;
+  char *long_doc;
+};
+%%
+:, colon_builtin, 1, ":",
+., period_builtin, 1, ". [filename]",
+alias, alias_builtin, 1, "alias [ name[=value] ...]",
+bg, bg_builtin, 1, "bg [job_spec]",
+break, break_builtin, 1, "break [n]",
+builtin, builtin_builtin, 1, "builtin [shell-builtin [args...]]",
+bye, exit_builtin, 1, "bye [n]",
+cd, cd_builtin, 1, "cd [dir]",
+continue, continue_builtin, 1, "continue [n]",
+declare, declare_builtin, 1, "declare [-[frx]] name[=value]",
+dirs, dirs_builtin, 1, "dirs",
+echo, echo_builtin, 1, "echo [-n] [arg ...]",
+enable, enable_builtin, 1, "enable [-n name ...]",
+eval, eval_builtin, 1, "eval [arg ...]",
+exec, exec_builtin, 1, "exec [ [-] file [redirections]]",
+exit, exit_builtin, 1, "exit [n]",
+export, export_builtin, 1, "export [-n] [name ...]",
+fg, fg_builtin, 1, "fg [job_spec]",
+hash, hash_builtin, 1, "hash [-r] [name]",
+help, help_builtin, 1, "help [pattern]",
+history, history_builtin, 1, "history [n] [ [-w -r] [filename]]",
+jobs, jobs_builtin, 1, "jobs [-l]",
+kill, kill_builtin, 1, "kill [-sigspec -l] [pid | job ...]",
+local, local_builtin, 1, "local name[=value]",
+logout, logout_builtin, 1, "logout",
+popd, popd_builtin, 1, "popd [+n]",
+pushd, pushd_builtin, 1, "pushd [dir | +n]",
+pwd, pwd_builtin, 1, "pwd",
+read, read_builtin, 1, "read [name ...]",
+readonly, readonly_builtin, 1, "readonly [name ...]",
+return, return_builtin, 1,  "return [n]",
+set, set_builtin, 1, "set [-aefhkntuvx] [arg ...]",
+shift, shift_builtin, 1, "shift [n]",
+source, period_builtin, 1, "source <file>",
+suspend, suspend_builtin, 1, "suspend [-f]",
+[, test_builtin, 1, "[ args... ]",
+test, test_builtin, 1, "test [expr]",
+times, times_builtin, 1, "times",
+trap, trap_builtin, 1, "trap [arg] [signal_spec]",
+type, type_builtin, 1, "type [-type | -path] [name ...]",
+typeset, declare_builtin, 1, "typeset [-frx] [name[=word]]",
+ulimit, ulimit_builtin, 1, "ulimit [-cdmstf [limit]]",
+umask, umask_builtin, 1, "umask [nnn]",
+unalias, unalias_builtin, 1, "unalias [name ...]",
+unset, unset_builtin, 1, "unset [name ...]",
+wait, wait_builtin, 1, "wait [n]",
+for, (Function *)0x0, 1, "for NAME [in WORDS ...] ; do COMMANDS ; done",
+case, (Function *)0x0, 1, "case WORD in [PATTERN [| PATTERN ...]) COMMANDS ; ...] esac",
+if, (Function *)0x0, 1, "if COMMANDS then COMMANDS [else COMMANDS] fi",
+while, (Function *)0x0, 1, "while COMMANDS do COMMANDS done",
+until, (Function *)0x0, 1, "until COMMAND do COMMANDS done",
+function, (Function *)0x0, 1, "function NAME { COMMANDS ; } or NAME () { COMMANDS ; }",
+#  { (char *)0x0, (Function *)0x0, 0, (char *)0x0, (char *)0x0 }

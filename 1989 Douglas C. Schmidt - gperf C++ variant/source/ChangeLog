@@ -1,0 +1,438 @@
+Tue Jul 18 16:04:31 1989  Doug Schmidt  (schmidt at zola.ics.uci.edu)
+
+        * Fixed up readline.cc and readline.h so that they work OK
+          with g++ compilers that aren't completely up-to-date.
+          If symbol COMPILER_FIXED is defined then the behavior
+          that works on my more recent version of g++ is enabled.
+
+Sun Jul  9 17:53:28 1989  Doug Schmidt  (schmidt at glacier.ics.uci.edu)
+
+        * Changed the ./tests subdirectory Makefile so that it 
+          uses $(CC) instead of gcc.
+
+Sun Jul  2 21:52:15 1989  Doug Schmidt  (schmidt at glacier.ics.uci.edu)
+
+        * Fixed a number of subtle bugs that occurred when -S was
+          combined with various and sundry options.
+
+        * Added the -G option, that makes the generated keyword table
+          a global static variable, rather than hiding it inside
+          the lookup function.  This allows other functions to directly
+          access the contents in this table.
+
+        * Added the "#" feature, that allows comments inside the keyword
+          list from the input file. Comment handling takes place in readline.c.  
+          This simplifies the code and reduces the number of malloc calls.
+          
+        * Also added the -H option (user can give the name of the hash
+          function) and the -T option (prevents the transfer of the type decl
+          to the output file, which is useful if the type is already defined
+          elsewhere).
+
+Thu Jun 22 20:39:39 1989  Doug Schmidt  (schmidt at glacier.ics.uci.edu)
+
+        * Modified many classes so that they would inherit Std_Err as
+          a base class.  This makes things more abstract...
+
+Fri Jun 16 14:23:00 1989  Doug Schmidt  (schmidt at zola.ics.uci.edu)
+
+        * Modified the -f (FAST) option.  This now takes an argument.
+          The argument corresponds to the number of iterations used
+          to resolve collisions.  -f 0 uses the length of the
+          keyword list (which is what -f did before).  This makes
+          life much easier when dealing with large keyword files.
+
+Tue Jun  6 17:53:27 1989  Doug Schmidt  (schmidt at glacier.ics.uci.edu)
+
+        * Added the -c (comparison) option.  Enabling this
+          will use the strncmp function for string comparisons.
+          The default is to use strcmp.
+
+        * Fixed a typo in key_list.cc (PRINT_SWITCH).  This caused
+          faulty C code to be generated when the -D, -p, and -t
+          options were all enabled.
+
+Thu May 25 14:07:21 1989  Doug Schmidt  (schmidt at siam.ics.uci.edu)
+
+        * Once again, changed class Read_Line to overload global operator
+          new.  Hopefully, this will work...!
+
+Sun May 21 01:51:45 1989  Doug Schmidt  (schmidt at crimee.ics.uci.edu)
+
+        * Modified Key_List::print_hash_function () so that it properly
+          formats the associated values in the hash table according to
+          the maximum number of digits required to represent the largest
+          value.
+
+        * Removed the named return value from class Hash_Table's
+          operator (), since this causes a seg fault when -O is enabled.
+          No sense tripping subtle g++ bugs if we don't have to.... ;-)
+
+        * Removed the operator new hack from Read_Line, since this seemed
+          to create horrible bus error problems.
+                    
+        * Changed many class member functions and data members to be `static', 
+          if they don't manipulate this!
+          
+Fri May 12 23:06:56 1989  Doug Schmidt  (schmidt at glacier.ics.uci.edu)
+
+        * Changed class Std_Err to use static member functions, a la
+          Ada or Modula 2.  This eliminates the need for an explicit
+          error-handler class object.
+
+        * Added the ``named return value'' feature to Hash_Table::operator ()
+          and Bool_Array::operator [], just for the heck of it.... ;-)
+
+        * Changed the previous hack in Read_Line so that we now use
+          the overloaded global `new' instead of NEW_STRING!
+
+Wed May  3 17:36:55 1989  Doug Schmidt  (schmidt at zola.ics.uci.edu)
+
+        * Updated to version 1.7.  This reflects the recent major changes
+          and the new C port.
+
+        * Modified the GNU getopt.cc routine to have a class-based interface.
+
+        * Fixed a typo in Perfect.cc ~Perfect that prevented the actual maximum
+          hash table size from being printed (maybe the stream classes
+          weren't so bad after all.... ;-).
+
+        * Added support for the -f option.  This generates the perfect
+          hash function ``fast.''  It reduces the execution time of
+          gperf, at the cost of minimizing the range of hash values.
+
+Tue May  2 16:23:29 1989  Doug Schmidt  (schmidt at crimee.ics.uci.edu)
+
+        * Added an efficiency hack to Read_Line.  Instead of making
+          a call to operator NEW (a.k.a. malloc) for each input string
+          a new member function NEW_STRING stores a large buffer from
+          which new strings are carved out, growing the buffer if
+          necessary.  It might be useful to add this throughout the
+          program....
+
+        * Removed all unnecessary calls to DELETE.  If the program is about
+          to exit it is silly to waste time freeing memory.
+
+        * Added the GNU getopt program to the distribution.  This makes
+          GPERF portable to systems that don't include getopt in libc.
+          
+        * Added a strcspn member to class Key_List.  This also increases
+          portability.
+
+        * Added the get_include_src function from keylist.c as a member
+          function in class Key_List.  Hopefully every function is 
+          now associated with a class.  This aids abstraction and
+          modularity.
+
+        * Ported gperf to C.  From now on both K&R C and GNU G++ versions
+          will be supported.  There will be two ChangeLog files, one
+          for each version of the program.
+
+Mon May  1 16:41:45 1989  Doug Schmidt  (schmidt at glacier.ics.uci.edu)
+
+        * Fixed a bug with -k'*'.  This now prints out *all* the cases
+          up to the length of the longest word in the keyword set.
+
+Sun Apr 30 12:15:25 1989  Doug Schmidt  (schmidt at crimee.ics.uci.edu)
+
+        * Removed all use of the stream classes.  Too ugly, slow, and
+          not handled by the c++-mode formatter....
+
+        * Modified the handling of links (i.e., keywords that have
+          identical hash values as other keywords).  This should 
+          speed up hash function generation for keyword sets with
+          many duplicate entries.  The trick is to treat duplicate
+          values as equivalence classes, so that each set of duplicate
+          values is represented only once in the main list processing.
+
+        * Fixed some capitialization typos and indentations mistakes in 
+          Key_List::print_hash_function.
+
+Sat Apr 29 12:04:03 1989  Doug Schmidt  (schmidt at zola.ics.uci.edu)
+
+        * Fixed a typo/logico in Key_List::print_switch that prevented
+          the last keyword in the keyword list to be print out.  This
+          requires further examination.....
+
+        * Fixed a stupid bug in List_Node::List_node.  If the -k'*' option
+          was enabled the KEY_SET string wasn't getting terminated with
+          '\0'!
+
+Fri Apr 28 12:38:35 1989  Doug Schmidt  (schmidt at glacier.ics.uci.edu)
+
+        * Renamed strexp.h and strexp.cc to iterator.h and iterator.cc.
+          Also changed the strexp class to iterator.  Continued to work
+          on style...
+
+        * Updated the version number to 1.6.  This reflects all the 
+          recent changes.
+
+Thu Apr 27 00:14:51 1989  Doug Schmidt  (schmidt at glacier.ics.uci.edu)
+
+        * Added the -D option that properly handles keyword sets that
+          contain duplicate hash values.
+
+        * Continued the stylistic changes.  Added the #pragma once
+          directive to all the *.h files.  Removed all #defines and
+          replaced them with static consts.  Also moved the key_sort
+          routine from options.cc into the options class as a 
+          member function.
+
+Mon Apr  3 13:26:55 1989  Doug Schmidt  (schmidt at zola.ics.uci.edu)
+
+        * Made massive stylistic changes to bring source code into
+          conformance with GNU style guidelines.
+
+Thu Mar 30 23:28:45 1989  Doug Schmidt  (schmidt at crimee.ics.uci.edu)
+
+        * Fixed up the output routines so that they generate code
+          corresponding to the GNU style guidelines.
+
+Sat Mar 11 13:12:37 1989  Doug Schmidt  (schmidt at glacier.ics.uci.edu)
+
+        * Fixed Stderr constructors so that they wouldn't try to
+          use the base class initializer syntax for the static 
+          class variable Program_Name.  G++ 1.34 is stricter in
+          enforcing the rules!
+
+Fri Mar 10 11:24:14 1989  Doug Schmidt  (schmidt at glacier.ics.uci.edu)
+
+        * Removed -v and ``| more'' from the Makefile to keep rfg happy...
+
+Thu Mar  2 12:37:30 1989  Doug Schmidt  (schmidt at crimee.ics.uci.edu)
+
+        * Sent latest GNU gperf version 1.5 to Doug Lea for inclusion
+          into libg++ 1.34.  Note that there is a small bug with
+          the new %{ ... %} source inclusion facility, since it doesn't
+          understand comments and will barf if %{ or %} appear nested
+          inside the outermost delimiters.  This is too trivial of
+          a defect to fix at the moment...
+
+Tue Feb 28 11:19:58 1989  Doug Schmidt  (schmidt at glacier.ics.uci.edu)
+
+        * Added the -K option, which allows the user to provide a
+          alternative name for the keyword structure component.
+          The default is still ``name.''
+
+        * Added the LEX and YACC-like ability to include arbitrary
+          text at the beginning of the generated C source code output.
+          This required two new functions Get_Special_Input, 
+          Key_List::Save_Include_Src;
+
+        * Fixed memory allocation bug in Key_List::Set_Types.
+          Variable Return_Type needs 1 additional location
+          to store the "*" if the -p option is used.
+          
+        * Added code to NULL terminate both Struct_Tag and Return_Type,
+          *after* the strncpy (stupid mistake).
+          
+Mon Feb 27 14:39:51 1989  Doug Schmidt  (schmidt at glacier.ics.uci.edu)
+
+        * Added a new option -N.  This allows the user to specify the
+          name to be used for the generated lookup function.  The
+          default name is still ``in_word_set.''  This makes it
+          possible to completely automate the perfect hash function
+          generation process!
+
+Mon Feb 20 23:33:14 1989  Doug Schmidt  (schmidt at glacier.ics.uci.edu)
+
+        * Corrected the Hash_Table::operator () function so that
+          *it* is responsible for deciding when a new key has the
+          same signature as a previously seen key.  The key length 
+          information is now used internally to this function to
+          decide whether to add to the hash table those keys with
+          the same key sets, but different lengths.  Before, this
+          was handled by the Key_List::Read_Keys function.  However,
+          this failed to work for certain duplicate keys, since
+          they weren't being entered into the hash table properly.
+
+Sun Feb 19 16:02:51 1989  Doug Schmidt  (schmidt at glacier.ics.uci.edu)
+
+        * Modified class Options by moving the enum Option_Type out
+          of the class.  This is to satisfy the new enumeration
+          scope rules in C++.
+
+Sun Jan 15 15:12:09 1989  Doug Schmidt  (schmidt at crimee.ics.uci.edu)
+
+        * Incremented the version number upto 1.4 to reflect the new 
+          options that affect the generated code.  Send the new 
+          distribution off to Michael for use with g++ 1.33.
+
+        * Added a fix to Key_List::Read_Keys so that it checks for links
+          properly when the -n option is used.  Previously, it didn't
+          catch obvious links, which caused it to spend large amount
+          of time searching for a solution that could never occur!
+
+        * Modified the Key_List data structure to record *both* the 
+          minimum and the maximum key lengths.  This information
+          is now computed in Key_List::Read_Keys, and thus 
+          Key_List::Print_Min_Max doesn't need to bother.
+
+        * Modifed the key position iterator scheme in options.cc to
+          eliminate the need for member function Options::Advance.
+          Now, the Options::Get function performs the advancement
+          automatically, obviating the need for an extra function call.
+
+        * Added the new function Options::Print_Options, to print out
+          the user-specified command line options to generated C
+          output file.
+
+        * Added a new function, Key_List::Print_Keylength_Table,
+          which creates a table of lengths for use in speeding
+          up the keyword search.  This also meant that a new
+          option, -l (LENTABLE) is recognized.  It controls 
+          whether the length table is printed and the comparison
+          made in the generated function ``in_word_set.''
+
+        * Added a comment at the top of the generated C code
+          output file that tells what version of gperf was used.
+          Next, I'll also dump out the command line options
+          as a comment too.  Thanks to Michael Tiemann for the
+          feedback on this.
+
+        * Fixed the -n option to make it work correctly with
+          other parts of the program (most notably the Perfect::Hash
+          function and the computation of minimum and maximum lengths.
+
+Fri Jan 13 21:25:27 1989  Doug Schmidt  (schmidt at siam.ics.uci.edu)
+
+        * Realized the the need to add a test that will enable
+          optimziation of the generated C code in the ``hash'' function
+          by checking whether all the requested key positions are
+          guaranteed to exist due to the comparison in `in_word_set.''
+          I'll put this in soon....
+
+Thu Jan 12 20:09:21 1989  Doug Schmidt  (schmidt at glacier.ics.uci.edu)
+
+        * Added pascal, modula3, and modula2 tests inputs to the 
+          Makefile
+        
+        * Recognised that there is a bug with the -n option.  However
+          I'm too busy to fix it properly, right now.  The problem 
+          is that the generated #define end up being 0, since that's
+          my hack to make -n work.  This needs complete rethinking!
+
+Tue Jan 10 00:08:16 1989  Doug Schmidt  (schmidt at crimee.ics.uci.edu)
+
+        * Added a new option, -n, that instructs gperf to not use the
+          length of an identifier when computing the hash functions.
+          I'm not sure how useful this is!
+          
+        * Retransmitted the distribution to rocky.oswego.edu.  Hopefully,
+          this will work!
+
+        * Began fixing the indentation and capitalization to conform
+          to the GNU coding guidelines.
+
+Mon Jan  9 22:23:18 1989  Doug Schmidt  (schmidt at pompe.ics.uci.edu)
+
+        * Fixed horrible bug in Read_Line::Readln_Aux.  This was
+          a subtle and pernicous off-by-1 error, that overwrote
+          past the last character of the input string buffer.  I
+          think this fault was killing the vax!
+
+        * Yow, fixed an oversight in List_Node::List_Node, where the
+          pointer field Next was uninitialized.  Luckily, the new routine
+          seems to return 0 filled objects the first time through!
+
+Sun Jan  8 13:43:14 1989  Doug Schmidt  (schmidt at crimee.ics.uci.edu)
+
+        * Modified the ``key linked'' diagnostic in Key_List::Read_Keys
+          to be more helpful and easy to read.
+
+        * Fixed the List_Node::List_Node so that it would ignore trailing
+          fields if the -t option was not enabled.
+
+        * Moved the List_Node declarations out of keylist.h and
+          into a file of its own, called listnode.cc and listnode.h
+          Made Set_Sort a member function of class List_Node.
+
+        * Massively updated the documentation in the gperf.texinfo file.
+        
+        * Polished off the major revision to the print functions,
+          added a few new tests in the Makefile to check for the
+          validity of the program and ftp'ed the entire distribution
+          off to Doug Lea for libg++. ( changed it to
+          1.3 to reflect the major changes with the generated
+          C code ).
+
+        * Fixed Key_List::Print_Switch to deal with the -p and -t options.
+          This meant that the ``still-born'' function Key_List::
+          Print_Type_Switch was superflous, so I removed it.
+          Also, removed the restriction in Option that the -p and
+          -t options couldn't be used simultaneously.
+
+        * Modified List_Node::List_Node, to perform only 1 call to 
+          ``new'' when dynamically allocating memory for the Key_Set
+          and the Uniq_Set.
+
+Sat Jan  7 14:10:51 1989  Doug Schmidt  (schmidt at glacier.ics.uci.edu)
+
+        * Fixed a big bug with the new policy of nesting the
+          wordlist inside of generated function ``in_word_set.''
+          I'd forgotten to declare the wordlist array as static!
+          ( arrgh ).
+
+        * Added a new function Key_List::Set_Types, that figures out
+          the return type for generated function ``in_word_set,''
+          the user-defined ``struct tag,'' if one is used, and also
+          formates the array type for the static local array.
+
+        * Changed the print routines to take advantage of the
+          new -p option.
+
+        * Began adding the hooks to allow the return of a pointer
+          to a user defined struct location from the generated
+          ``in_word_set'' function instead of the current 0 or 1
+          return value.  Created function Key_List::Print_Type_Switch
+          and added option -p to class Option, allowing the user to 
+          request generation of the aforementioned pointers returned 
+          instead of booleans.
+
+        * Put in checks in class Option to make sure that -S and -t
+          options are not used simultaneously.  This restriction
+          will be removed in subsequent releases, once I decide on
+          a clean way to implement it.
+
+        * Sent version 1.2 to Doug Lea for possible inclusion into
+          the libg++ distribution.
+          
+        * Moved the static word_list array inside the generated function
+          in_word_set.  This supports better data hiding.
+
+        * Added a texinfo file, gperf.texinfo
+          
+        * Revised the Makefile to cleanup the droppings from texinfo
+          and changed the name of gperf.cc and gperf.h to perfect.cc
+          and perfect.h.
+
+Fri Jan  6 13:04:45 1989  Doug Schmidt  (schmidt at crimee.ics.uci.edu)
+
+        * Implemented the switch statement output format.  Much better
+          for large datasets in terms of space used.
+
+        * Added new functions to break up the Key_List::Output function.
+          Functions added were Key_List::Print_Switch, Key_List::Print_Min_Max,
+          Key_List::Print_Keyword_Table, Key_List::Print_Hash_Function,
+          and Key_List::Print_Lookup_Function.  This simplifies the
+          big mess in Key_List::Output considerably!
+          
+        * Added switch statement option to Options, which potentially 
+          trades time for space in the generated lookup code.
+
+Thu Jan  5 22:46:34 1989  Doug Schmidt  (schmidt at siam.ics.uci.edu)
+
+        * Released version 1.1
+        
+        * Fixed a bug with Gperf::Merge_Set, it was skipping letters shared
+          between the Set_1 and Set_2.
+
+        * Added the optimal min/max algorithm in Key_List::Output.  This
+          runs in O ( 3n/2 ), rather than O ( 2n ) time.
+
+        * Changed Gperf::Sort_Set to use insertion sort, rather than
+          bubble sort.
+        
+        * Added a check in Key_List::Output for the special case where
+          the keys used are 1,$.  It is possible to generate more
+          efficient C code in this case.

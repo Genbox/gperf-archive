@@ -1,0 +1,57 @@
+History:
+	On 10/7/83 C. Havener (charlie at genrad.UUCP) put a perfect hash
+	function finding program on the net.  On 11/4/84 R. Dietrich
+	(robertd at tektronix.UUCP) put a Pascal version of the same program
+	on the net.  Both of these programs were based on "More on Minimal
+	Perfect Hash Tables," Colorado State University Technical Report,
+	April 1981, by Cook, Curtis R. and Oldehoeft, R. R., and "Minimal
+	Perfect Hash Functions Made Simple" by Richard J. Cichelli - Comm.
+	of ACM Jan 1980.
+
+These programs had the following limitations, some of which they shared,
+some of which they didn't:
+	-- limited number of strings (40 or 110) per hash table.
+	-- slow to extremely slow run-time (large amounts of both
+		recursion and parallel array processing).
+	-- a requirement that the hash strings be in a certain order.
+	-- a fixed hashing algorithm.
+	-- inability to handle strings that hashed to identical values.
+
+In a recent program I was doing, I had to hash approximately 500 different
+keywords, preferably in one access.  To do this, I ended up rewriting the
+above programs.  The attached version has fixed some of the limitations.
+	-- no keyword limit; I've used it to hash up to about 2400 entries.
+	-- it's several orders of magnitude faster.
+	-- it's fairly indifferent to the order the strings are presented in.
+	-- you can specify the keys to be hashed.
+	-- it handles strings that hash to identical values.
+
+The basic algorithm is:
+
+	hash = the length of the string plus the sum of all of the
+		associated values of the key characters.
+
+	The program assigns values to the characters it is using for
+	hashing until a set of the values gives each keyword a unique
+	value.
+
+For example: If the string was "thekid" and the key characters were
+'t' and 'd', with 't' having a value of 5 and 'd' having a value of
+8, the hash value of "thekid" would be 19; 8 + 5 + strlen("thekid");
+
+It takes two arguments --
+-d --	print out some interesting debugging information.
+-k --	use the following characters of the string in the hashing algorithm.
+	If the program was called as "perf -k137" and the string "abcdefgh"
+	was entered, the characters 'a', 'c', and 'g' would be used by the
+	hashing scheme.  To make this easier, the program prints out a routine
+	at the end of its run that, when passed a string, will return the
+	correct hash value.  Also, the special character '$' tells the program
+	to use the last character of every string.  Default, if the k flag
+	isn't specified, is "-k1$", i.e. the first and last character of every
+	string.
+
+followed by a filename containing the keywords.
+
+Ex:	suppose there's a file "foo" containing the keywords:
+======================================================================

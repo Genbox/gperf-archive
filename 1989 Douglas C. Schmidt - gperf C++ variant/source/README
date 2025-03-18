@@ -1,0 +1,15 @@
+While teaching a data structures course at University of California,
+Irvine, I developed a program that generates perfect hash functions
+for sets of reserved words.  A perfect hash function is simply:
+
+      A hash function and and a data structure that allows
+      recognition of a key word in a set using 1 probe into the data
+      structure.  
+
+The gperf.texinfo file explains how the program works, the form of the
+input, what options to choose, and what limitations you may encounter.
+The Makefile creates the executable program ``gperf'' and also runs
+some tests.
+
+NOTE THAT YOU MUST HAVE G++ 1.35 OR LATER TO ASSURE THE PROPER
+FUNCTIONING FOR THE GPERF PROGRAM.
